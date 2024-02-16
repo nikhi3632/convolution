@@ -33,24 +33,25 @@ class ConvLayersV2(nn.Module):
     def forward(self, x):
         _conv1 = self.conv1(x)
         conv2_outputs = []
-        for j in range(_conv1.shape[1]):
+        for j in range(_conv1.shape[1]): # for each input channel
             conv2_output_i = []
-            for i in range(self.conv2.weight.shape[0]):
+            for i in range(self.conv2.weight.shape[0]): # for each output channel
                 filter_weights = self.conv2.weight[i:i+1, j:j+1, :, :]
                 conv2_output_ij = nn.functional.conv2d(_conv1[:, j:j+1, :, :], filter_weights)
                 os.makedirs(ARTIFACTS_DIR + f'/out_channel_{i}', exist_ok=True)
                 save_img(ARTIFACTS_DIR + f'/out_channel_{i}/out_{i}_in_{j}.jpeg', conv2_output_ij)
                 conv2_output_i.append(conv2_output_ij)
-            conv2_output_i = torch.cat(conv2_output_i, dim=1)  # Concatenate the outputs along the channel dimension
-            conv2_outputs.append(conv2_output_i)
+            conv2_output_i_ = torch.cat(conv2_output_i, dim=1)  # torch.Size([1, 64, 568, 568]), Concatenate the outputs along the channel dimension
+            conv2_outputs.append(conv2_output_i_) # contains N tensors of shape (batch, C, H, W) torch.Size([1, 64, 568, 568])
             print(100*'-')
         os.makedirs(ARTIFACTS_DIR + '/concat', exist_ok=True)
         for i, out_channel_output in enumerate(torch.stack(conv2_outputs, dim=0)):
             save_img(ARTIFACTS_DIR + f'/concat/out_channel_{i}.jpeg', out_channel_output)
         # Concatenate all output channels
-        _conv2 = torch.sum(torch.stack(conv2_outputs), dim=0)  # Sum the concatenated intermediate results along the channel dimension
+        stack_conv2 = torch.stack(conv2_outputs) # torch.Size([64, 1, 64, 568, 568])
+        _conv2 = torch.sum(stack_conv2, dim=0)  # Sum the all the concatenated intermediate results along the stacked dimension
         save_img(ARTIFACTS_DIR + '/conv2_output_v2.jpeg', _conv2)
-        return _conv2
+        return _conv2 # torch.Size([1, 64, 568, 568])
 
 if __name__ == "__main__":
     image = Image.open("cat_dog.jpeg")
