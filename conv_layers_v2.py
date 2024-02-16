@@ -47,9 +47,18 @@ class ConvLayersV2(nn.Module):
         os.makedirs(ARTIFACTS_DIR + '/concat', exist_ok=True)
         for i, out_channel_output in enumerate(torch.stack(conv2_outputs, dim=0)):
             save_img(ARTIFACTS_DIR + f'/concat/out_channel_{i}.jpeg', out_channel_output)
-        # Concatenate all output channels
-        stack_conv2 = torch.stack(conv2_outputs) # torch.Size([64, 1, 64, 568, 568])
-        _conv2 = torch.sum(stack_conv2, dim=0)  # Sum the all the concatenated intermediate results along the stacked dimension
+        
+        # # Concatenate all output channels
+        # stack_conv2 = torch.stack(conv2_outputs) # torch.Size([64, 1, 64, 568, 568])
+        # # Sum the all the concatenated intermediate results along the new stacked dimension, 
+        # # effectively summing the contributions from all input channels
+        # _conv2 = torch.sum(stack_conv2, dim=0)
+        
+        # Initialize the final output tensor with zeros
+        _conv2 = torch.zeros_like(conv2_outputs[0])
+        # Accumulate the contributions from each input channel
+        for _conv2_output_i in conv2_outputs:
+            _conv2 += _conv2_output_i
         save_img(ARTIFACTS_DIR + '/conv2_output_v2.jpeg', _conv2)
         return _conv2 # torch.Size([1, 64, 568, 568])
 
