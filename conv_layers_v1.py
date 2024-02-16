@@ -42,7 +42,7 @@ if __name__ == "__main__":
     sample_input = transform(image_gray).unsqueeze(0)
     model = ConvLayersV1(in_channels=1, out_channels=64)
     weights_conv1 = model.conv1.weight
-    print('Weights Conv2: ', weights_conv1.shape, weights_conv1)
+    print('Weights Conv1: ', weights_conv1.shape, weights_conv1)
     weights_conv2 = model.conv2.weight
     print('Weights Conv2: ', weights_conv2.shape, weights_conv2)
     output = model(sample_input)
