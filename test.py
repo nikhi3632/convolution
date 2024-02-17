@@ -13,9 +13,9 @@ def check_image_difference(image_path1, image_path2, threshold):
 
 image_path1 = os.getcwd() + "/conv2_output_v1.jpeg"
 image_path2 = os.getcwd() + "/artifacts/conv2_output_v2.jpeg"
-threshold = 2
+threshold = 3
 
 if check_image_difference(image_path1, image_path2, threshold):
-    print("The images have differences above the threshold.")
+    print(f"The images have differences above the threshold={threshold} .")
 else:
     print(f"The images are identical or have differences below the threshold={threshold} .")

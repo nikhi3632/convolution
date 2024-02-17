@@ -27,8 +27,8 @@ def save_img(path, tensor):
 class ConvLayersV2(nn.Module):
     def __init__(self, in_channels, out_channels):
         super(ConvLayersV2, self).__init__()
-        self.conv1 = nn.Conv2d(in_channels, 64, kernel_size=3, bias=False)
-        self.conv2 = nn.Conv2d(64, out_channels, kernel_size=3, bias=False)
+        self.conv1 = nn.Conv2d(in_channels, 32, kernel_size=3, bias=False)
+        self.conv2 = nn.Conv2d(32, out_channels, kernel_size=3, bias=False)
 
     def forward(self, x):
         _conv1 = self.conv1(x)
